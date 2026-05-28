@@ -21,7 +21,7 @@ class NotificationService {
 
   static Future<void> showImmediate(int id, String title, String body) async {
     const details = NotificationDetails(
-      android: AndroidNotificationDetails('wellbeing_channel', 'Wellbeing',
+      android: AndroidNotificationDetails('wellbeing_channel', 'Lumio',
           channelDescription: 'Recordatorios suaves',
           importance: Importance.defaultImportance),
       iOS: DarwinNotificationDetails(),
@@ -43,7 +43,7 @@ class NotificationService {
   }) async {
     final androidDetails = AndroidNotificationDetails(
       'wellbeing_channel',
-      'Wellbeing',
+      'Lumio',
       channelDescription: 'Recordatorios suaves',
       importance: Importance.defaultImportance,
     );

@@ -18,7 +18,7 @@ class WellbeingApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Wellbeing App',
+      title: 'Lumio',
       theme: AppTheme.light(),
       home: const SplashDecider(),
     );
