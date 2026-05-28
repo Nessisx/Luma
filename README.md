@@ -1,22 +1,63 @@
-# Wellbeing App
+# WellBeing 🌿
 
-App Flutter de bienestar y monitoreo emocional basada en baseline personal.
+**WellBeing** es una aplicación móvil desarrollada con Flutter diseñada para el monitoreo emocional y el bienestar personal. Utiliza inteligencia artificial (modelos ONNX) para analizar patrones de salud y nutrición, proporcionando una experiencia personalizada basada en datos del usuario.
 
-## Incluye
+## 🚀 Guía de Instalación y Uso
 
-- Dashboard con score principal y tendencias
-- Check-in diario de mood, energía y estrés
-- Insights basados en patrones locales de ejemplo
-- Ajustes y privacidad
+### Requisitos del Sistema
+*   **Android:** Versión 8.0 (API 26) o superior.
+*   **Espacio disponible:** Aproximadamente 150MB para la instalación.
 
-## Abrir en Android Studio
+### Instrucciones de Instalación (APK)
+1. Descarga el archivo `app-release.apk` (o el específico para tu arquitectura desde el apartado de Releases si está disponible).
+2. En tu dispositivo Android, permite la instalación de aplicaciones de orígenes desconocidos (Ajustes > Seguridad).
+3. Abre el archivo descargado e instálalo.
 
-1. Abre esta carpeta como proyecto Flutter.
-2. Asegura que Flutter SDK y Android SDK estén configurados en tu máquina.
-3. Ejecuta `flutter pub get`.
-4. Si Android Studio te pide la ruta del SDK de Flutter, define `FLUTTER_ROOT` o completa `android/local.properties`.
-5. Ejecuta la app en un emulador o dispositivo Android.
+### Credenciales de Prueba
+*   La aplicación **no requiere inicio de sesión** obligatorio para las funciones principales en esta versión, permitiendo un acceso rápido al monitoreo local.
 
-## Nota
+### Funciones Principales a Evaluar
+*   **Dashboard de Bienestar:** Visualización del score de salud y tendencias actuales.
+*   **Check-in Diario:** Registro de estado de ánimo, niveles de energía y estrés.
+*   **Análisis con IA:** El sistema procesa datos locales mediante modelos ONNX (`nutrition_model` y `bilstm_wellbeing`) para ofrecer insights.
+*   **Cámara y Escaneo:** Módulo para captura o selección de imágenes para análisis nutricional.
+*   **Notificaciones:** Recordatorios configurables para mantener el hábito del registro.
 
-Esta base no conecta todavía con Health Connect, HealthKit ni backend. Está preparada para integrarlos después.
+---
+
+## 📺 Video Demostrativo
+Puedes ver el funcionamiento completo de la aplicación en el siguiente enlace:
+> **[Enlace al video en YouTube/Drive]** *(Sustituye este texto por tu link real)*
+
+El video demuestra:
+1. Flujo completo de navegación.
+2. Funcionamiento de los botones y módulos.
+3. Interacción con los modelos de IA integrados.
+
+---
+
+## 🛠️ Estructura del Proyecto (Desarrollo)
+Si deseas ejecutar el código fuente:
+
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone https://github.com/Nessisx/WellBeing.git
+    ```
+2.  **Instalar dependencias:**
+    ```bash
+    flutter pub get
+    ```
+3.  **Ejecutar:**
+    ```bash
+    flutter run --release
+    ```
+
+---
+
+## 🧠 Modelos de IA Incluidos
+La aplicación integra los siguientes modelos en formato ONNX:
+*   `bilstm_wellbeing.onnx`: Para el análisis de tendencias de bienestar.
+*   `nutrition_model.onnx`: Para el procesamiento de datos nutricionales.
+
+---
+**Desarrollado para:** Proyecto de Inteligencia Artificial - 7mo Semestre.
