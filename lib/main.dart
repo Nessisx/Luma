@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wellbeing_app/models/wellbeing_models.dart';
+import 'package:lumio/models/wellbeing_models.dart';
 import 'app.dart';
 
 void main() async {

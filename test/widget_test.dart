@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:wellbeing_app/app.dart';
+import 'package:lumio/app.dart';
 
 void main() {
   testWidgets('renders wellbeing shell', (WidgetTester tester) async {

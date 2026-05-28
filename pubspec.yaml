@@ -1,4 +1,4 @@
-name: wellbeing_app
+name: lumio
 description: App de bienestar y monitoreo emocional basada en baseline personal.
 publish_to: "none"
 version: 1.0.0+1
