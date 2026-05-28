@@ -29,20 +29,6 @@
 
 ---
 
-## 📺 Video Demostrativo
-
-Puedes ver el funcionamiento completo de la aplicación en el siguiente enlace:
-
-> **[Enlace al video en YouTube/Drive]** _(Sustituye este texto por tu link real)_
-
-El video demuestra:
-
-1. Flujo completo de navegación.
-2. Funcionamiento de los botones y módulos.
-3. Interacción con los modelos de IA integrados.
-
----
-
 ## 🛠️ Estructura del Proyecto (Desarrollo)
 
 Si deseas ejecutar el código fuente:
