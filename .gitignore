@@ -34,3 +34,34 @@ linux/flutter/ephemeral/
 # OS-related
 .DS_Store
 Thumbs.db
+
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+!.env.template
+!.env.*.example
+.secrets/
+.aws/
+.codex/
+key.properties
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.pem
+*.key
+service-account*.json
+*firebase-adminsdk*.json
+
+# Generated reports and distributable builds
+coverage/
+test-results/
+*.log
+*.apk
+*.aab
+*.apks
+
+# Local tool caches (keep version/configuration files tracked)
+android/.kotlin/
+.fvm/flutter_sdk/

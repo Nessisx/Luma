@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lumio/models/wellbeing_models.dart';
+import 'package:luma/models/wellbeing_models.dart';
 import 'app.dart';
 
 void main() async {
@@ -7,7 +7,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Inicializar los modelos ONNX de forma segura desde la memoria
-  await wellbeingInference.initModel();
+  // Daily check-ins use explicit rules until the model feature pipeline is validated.
   await nutritionInference.initModel();
 
   // NOTA: Si 'WellbeingApp' te sigue saliendo en rojo, cámbialo por 'App' o 'MyApp'

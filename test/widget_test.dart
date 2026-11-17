@@ -1,13 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:lumio/app.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luma/app.dart';
 
 void main() {
-  testWidgets('renders wellbeing shell', (WidgetTester tester) async {
+  testWidgets('first launch shows consent before health permissions',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({});
     await tester.pumpWidget(const WellbeingApp());
     await tester.pumpAndSettle();
-
-    expect(find.text('Bienestar de hoy'), findsOneWidget);
-    expect(find.text('Check-in'), findsWidgets);
+    expect(find.text('Acepto'), findsOneWidget);
+    expect(find.byType(ConsentScreen), findsOneWidget);
   });
 }

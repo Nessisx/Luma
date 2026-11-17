@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../models/wellbeing_models.dart';
 import '../theme/app_theme.dart';
+import 'watch_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   final WellbeingSnapshot snapshot;
-  final VoidCallback onResetBaseline;
   final bool notificationsEnabled;
   final TimeOfDay reminderTime;
   final ValueChanged<bool> onNotificationsChanged;
@@ -14,7 +14,6 @@ class SettingsScreen extends StatelessWidget {
 
   const SettingsScreen({
     required this.snapshot,
-    required this.onResetBaseline,
     required this.notificationsEnabled,
     required this.reminderTime,
     required this.onNotificationsChanged,
@@ -35,19 +34,16 @@ class SettingsScreen extends StatelessWidget {
           Text('Ajustes', style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 8),
           Text(
-            'Privacidad, recordatorios y permisos. Esta primera versión trabaja con datos locales simulados.',
+            'Tu espacio, a tu manera. Administra tus datos, conexiones y recordatorios.',
             style:
                 Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.4),
           ),
           const SizedBox(height: 18),
           _SettingsCard(
-            title: 'Baseline personal',
+            title: 'Tu resumen diario',
             subtitle:
-                'La app compara tu día de hoy contra tu patrón reciente, no contra una media poblacional.',
-            trailing: TextButton(
-              onPressed: onResetBaseline,
-              child: const Text('Restablecer'),
-            ),
+                'Los índices usan las respuestas de tu último check-in, sin mezclarlas con ceros iniciales. Las tendencias se muestran por separado. Son referencias de la app, no una evaluación clínica.',
+            trailing: const Icon(Icons.info_outline),
           ),
           const SizedBox(height: 12),
           _SettingsCard(
@@ -82,15 +78,7 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          _SettingsCard(
-            title: 'Health Connect / HealthKit',
-            subtitle:
-                'Fuente prevista para sueño, actividad y métricas de bienestar cuando integres permisos nativos.',
-            trailing: const Chip(
-              label: Text('Planificado'),
-              side: BorderSide.none,
-            ),
-          ),
+          const WatchCard(),
           const SizedBox(height: 12),
           _SettingsCard(
             title: 'Seguimiento amable',

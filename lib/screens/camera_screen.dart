@@ -23,6 +23,7 @@ class _CameraScreenState extends State<CameraScreen> {
     if (xfile == null) return;
     final saved = await ImageActions.saveToAppDir(xfile);
     if (saved == null) return;
+    if (!mounted) return;
     setState(() {
       _imageFile = saved;
       _nutritionData = null;
@@ -30,6 +31,7 @@ class _CameraScreenState extends State<CameraScreen> {
     
     // Inferencia real usando el modelo ONNX
     final res = await nutritionInference.predictNutrition(saved);
+    if (!mounted) return;
     
     setState(() {
       _nutritionData = res;
@@ -45,6 +47,7 @@ class _CameraScreenState extends State<CameraScreen> {
     if (xfile == null) return;
     final saved = await ImageActions.saveToAppDir(xfile);
     if (saved == null) return;
+    if (!mounted) return;
     setState(() {
       _imageFile = saved;
       _nutritionData = null;
@@ -52,6 +55,7 @@ class _CameraScreenState extends State<CameraScreen> {
     
     // Inferencia real usando el modelo ONNX
     final res = await nutritionInference.predictNutrition(saved);
+    if (!mounted) return;
 
     setState(() {
       _nutritionData = res;
@@ -69,10 +73,10 @@ class _CameraScreenState extends State<CameraScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Cámara', style: Theme.of(context).textTheme.headlineMedium),
+          Text('Foto de tu comida', style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 8),
           Text(
-              'Toma o importa una foto de tu comida. Aquí aparecerán estimaciones de proteínas y recomendaciones.',
+              'Este registro es opcional. Toma o importa una foto cuando quieras explorar tu alimentación. Las estimaciones son orientativas.',
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium

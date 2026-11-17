@@ -5,6 +5,10 @@ import '../theme/app_theme.dart';
 import '../widgets/score_ring.dart';
 import '../widgets/trend_sparkline.dart';
 import '../utils/support_actions.dart';
+import 'watch_screen.dart';
+import '../services/reflection_messages.dart';
+import '../widgets/message_deck.dart';
+import '../widgets/mood_face.dart';
 
 class HomeScreen extends StatelessWidget {
   final WellbeingSnapshot snapshot;
@@ -26,8 +30,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasHistory = history.isNotEmpty;
-    final trendValues = history
+    final records = dailyCheckIns(history);
+    final hasHistory = records.isNotEmpty;
+    final trendValues = records
         .take(7)
         .map((record) => record.score.toDouble())
         .toList()
@@ -39,16 +44,26 @@ class HomeScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _Header(onOpenCheckIn: onOpenCheckIn),
-          const SizedBox(height: 16),
-          const _DisclaimerCard(),
+          Row(children: [
+            Image.asset('assets/images/logo.png', width: 56, height: 56),
+            const SizedBox(width: 8),
+            const Text('Luma',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.forest)),
+          ]),
           const SizedBox(height: 20),
-          const _HealthConnectCard(),
+          _Header(
+              onOpenCheckIn: onOpenCheckIn,
+              latest: records.isEmpty ? null : records.first),
+          const SizedBox(height: 16),
+          MessageDeck(messages: reflectionMessages(records)),
           const SizedBox(height: 16),
           if (!hasHistory) ...[
             _EmptyDashboardCard(onOpenCheckIn: onOpenCheckIn),
           ] else ...[
-            _WeeklySummaryCard(history: history),
+            _WeeklySummaryCard(history: records),
             const SizedBox(height: 16),
             ScoreRing(
               score: snapshot.overallScore,
@@ -59,7 +74,6 @@ class HomeScreen extends StatelessWidget {
             _SupportEscalationCard(
               snapshot: snapshot,
               onRegister: onRegisterSupportAction,
-              onOpenCamera: onOpenCamera,
             ),
             const SizedBox(height: 16),
             GridView.count(
@@ -68,7 +82,7 @@ class HomeScreen extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: 1.45,
+              childAspectRatio: 1.1,
               children: [
                 _MetricCard(
                     title: 'Sueño',
@@ -86,14 +100,18 @@ class HomeScreen extends StatelessWidget {
                     color: AppTheme.terracotta,
                     icon: Icons.smartphone_outlined),
                 _MetricCard(
-                    title: 'Carga',
+                    title: 'Estrés',
                     value: snapshot.stressLoad,
                     color: AppTheme.terracotta,
                     icon: Icons.water_drop_outlined),
               ],
             ),
             const SizedBox(height: 18),
-            Text('Tendencia de 7 días',
+            const Text(
+                'Índices orientativos de 0 a 100. Sueño, actividad y redes: más alto es más favorable según las reglas de la app. Estrés: más alto significa más carga, no más bienestar.',
+                style: TextStyle(fontSize: 12, height: 1.5)),
+            const SizedBox(height: 18),
+            Text('Tus últimos 7 registros',
                 style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             TrendSparkline(values: trendValues),
@@ -101,7 +119,7 @@ class HomeScreen extends StatelessWidget {
             Text('Últimos check-ins',
                 style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
-            ...history.take(3).map(
+            ...records.take(3).map(
                   (record) => Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: _HistoryTile(record: record),
@@ -136,12 +154,65 @@ class HomeScreen extends StatelessWidget {
               const _InsightHighlight(
                 title: 'Sin señales claras todavía',
                 body:
-                    'Aún no hay check-ins para comparar. Guarda tu primer registro y aquí empezará tu patrón personal.',
+                    'Los registros irán dando contexto a tu historia. Por ahora, observa cómo te sientes sin sacar conclusiones apresuradas.',
                 label: 'Inicio',
               ),
             ],
           ],
+          const SizedBox(height: 20),
+          const WatchCard(),
+          const SizedBox(height: 16),
+          _FoodPhotoCard(onOpen: onOpenCamera),
+          const SizedBox(height: 16),
+          const _DisclaimerCard(),
         ],
+      ),
+    );
+  }
+}
+
+class _FoodPhotoCard extends StatelessWidget {
+  final VoidCallback onOpen;
+
+  const _FoodPhotoCard({required this.onOpen});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.zero,
+      color: AppTheme.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(22),
+        side: BorderSide(color: AppTheme.sage.withValues(alpha: 0.15)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.restaurant_outlined, color: AppTheme.sage),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text('Alimentación',
+                      style: Theme.of(context).textTheme.titleMedium),
+                ),
+                const Text('Opcional'),
+              ],
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Si quieres, toma o importa una foto de tu comida para explorar sus nutrientes estimados.',
+            ),
+            const SizedBox(height: 8),
+            TextButton.icon(
+              onPressed: onOpen,
+              icon: const Icon(Icons.add_a_photo_outlined),
+              label: const Text('Explorar mi comida'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -171,7 +242,7 @@ class _EmptyDashboardCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Haz tu primer check-in para que la app empiece vacía y empiece a leer tu patrón personal desde cero.',
+            'Tu historia no necesita empezar perfecta. Registra cómo te sientes y vuelve cuando quieras dedicarte un momento.',
             style:
                 Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.4),
           ),
@@ -194,49 +265,58 @@ class _EmptyDashboardCard extends StatelessWidget {
 
 class _Header extends StatelessWidget {
   final VoidCallback onOpenCheckIn;
-
-  const _Header({required this.onOpenCheckIn});
-
+  final CheckInRecord? latest;
+  const _Header({required this.onOpenCheckIn, required this.latest});
   @override
   Widget build(BuildContext context) {
-    final hour = DateTime.now().hour;
-    final greeting = hour < 12
+    final now = DateTime.now();
+    final greeting = now.hour < 12
         ? 'Buenos días'
-        : hour < 18
+        : now.hour < 18
             ? 'Buenas tardes'
             : 'Buenas noches';
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(greeting, style: Theme.of(context).textTheme.headlineMedium),
-              const SizedBox(height: 6),
-              Text(
-                'Tu ritmo personal es la referencia principal. La app se ajusta a tus cambios, no a promedios genéricos.',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(height: 1.4),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 12),
-        FilledButton(
-          onPressed: onOpenCheckIn,
-          style: FilledButton.styleFrom(
-            backgroundColor: AppTheme.textPrimary,
-            foregroundColor: Colors.white,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-          ),
-          child: const Text('Check-in'),
-        ),
-      ],
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppTheme.forest, Color(0xFF3C815C)]),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('$greeting · ${now.day}/${now.month}',
+            style: const TextStyle(
+                color: Colors.white70, fontWeight: FontWeight.w600)),
+        const SizedBox(height: 18),
+        Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Expanded(
+              child: Text('Hoy también\nhay espacio para ti.',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineMedium
+                      ?.copyWith(color: Colors.white, height: 1.25))),
+          const SizedBox(width: 12),
+          MoodFace(
+              mood: latest == null ? 3 : ((latest!.mood - 1) / 2).floor(),
+              size: 76),
+        ]),
+        const SizedBox(height: 14),
+        Text(
+            latest == null
+                ? 'Empieza con una pausa. ¿Cómo te sientes hoy?'
+                : 'Último check-in: ${latest!.date.day}/${latest!.date.month} · Ánimo ${latest!.mood.round()}/10. Cada registro cuenta, sea como sea tu día.',
+            style: const TextStyle(color: Colors.white, height: 1.5)),
+        const SizedBox(height: 20),
+        FilledButton.icon(
+            onPressed: onOpenCheckIn,
+            style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFFD9EBBC),
+                foregroundColor: AppTheme.forest),
+            icon: const Icon(Icons.add_rounded),
+            label: const Text('Mi momento de hoy')),
+      ]),
     );
   }
 }
@@ -381,89 +461,6 @@ class _DisclaimerCard extends StatelessWidget {
   }
 }
 
-class _HealthConnectCard extends StatelessWidget {
-  const _HealthConnectCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppTheme.sage.withValues(alpha: 0.14)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppTheme.sage.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: const Icon(Icons.health_and_safety_outlined, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Salud conectada',
-                        style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Preparado para integrar Health Connect, sueño, actividad, pantalla y nutrición.',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(height: 1.35),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: const [
-              _DataChip('Health Connect'),
-              _DataChip('Sueño'),
-              _DataChip('Actividad'),
-              _DataChip('Redes'),
-              _DataChip('Comida + IA'),
-            ],
-          ),
-          const SizedBox(height: 14),
-          FilledButton.tonalIcon(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                      'La integración nativa con Health Connect se deja lista para la siguiente fase.'),
-                ),
-              );
-            },
-            icon: const Icon(Icons.link_outlined),
-            label: const Text('Preparar permisos'),
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(48),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _WeeklySummaryCard extends StatelessWidget {
   final List<CheckInRecord> history;
 
@@ -583,7 +580,7 @@ class _HistoryTile extends StatelessWidget {
       case RiskLevel.stable:
         return 'Estable';
       case RiskLevel.watch:
-        return 'Vigilar';
+        return 'Con matices';
       case RiskLevel.low:
         return 'Bajo';
       case RiskLevel.urgent:
@@ -644,12 +641,9 @@ class _HistoryTile extends StatelessWidget {
 class _SupportEscalationCard extends StatelessWidget {
   final WellbeingSnapshot snapshot;
   final void Function(String action, String details) onRegister;
-  final VoidCallback onOpenCamera;
 
   const _SupportEscalationCard(
-      {required this.snapshot,
-      required this.onRegister,
-      required this.onOpenCamera});
+      {required this.snapshot, required this.onRegister});
 
   Color get _accent {
     switch (snapshot.riskLevel) {
