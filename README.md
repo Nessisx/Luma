@@ -79,4 +79,4 @@ La aplicación integra los siguientes modelos en formato ONNX:
 
 ---
 
-**Desarrollado para:** Proyecto de Inteligencia Artificial - 7mo Semestre.
+**Desarrollado para:** Proyecto de Formación para la investigación - 7mo/8vo Semestre.
